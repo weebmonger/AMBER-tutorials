@@ -1,0 +1,11 @@
+initial minimisation solvent
+ &cntrl
+        imin   = 1,     ! Perform Energy Minimization
+        maxcyc = 10000, ! Max no of cycles of minimization
+        ncyc   = 5000,  ! Minimization method will be switched from steepest descent to conjugate gradient after 5000 cycles
+        ntb    = 1,     ! Constant volume periodic boundaries NVT
+        ntr    = 1,     ! Turn on Cartesian restraints with restraintmask and restraint_wt
+        cut    = 15,    ! non-bond cut off
+        restraintmask = ':1-164',  ! residues to be restrained during min1 (String that specifies the restrained atoms when ntr=1)
+        restraint_wt = 500    ! The weight (kcal·mol−1·Å−2) for the positional restraint
+ /
