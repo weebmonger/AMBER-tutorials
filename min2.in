@@ -1,0 +1,9 @@
+minimisation of complex
+ &cntrl
+        imin   = 1,ntmin=2,   ! XMIN method of minimization
+        maxcyc = 20000,
+        !ncyc   = 5000,
+        ntb    = 1,dx0=0.001,  ! The initial step length. If the initial step length is too big then will give a huge energy
+        ntr    = 0,
+        cut    = 15
+ /
