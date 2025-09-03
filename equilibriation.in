@@ -1,0 +1,17 @@
+protein: equilibration
+ &cntrl
+        imin   = 0,
+        irest  = 1,
+        ntx    = 5,
+        ntb    = 2,   ! NPT
+        cut    = 10,
+        ntp    = 1,barostat=2,
+        ntc    = 2,
+        ntf    = 2,
+        taup    = 2.0,
+        temp0  = 300.0,
+        ntt    = 3,
+        gamma_ln = 2.0,
+        nstlim = 1500000, dt = 0.002,ioutfm=1,
+        ntpr = 5000, ntwx = 5000, ntxo = 2
+ /
