@@ -1,0 +1,21 @@
+Heat Relaxation 1
+ &cntrl
+     imin=0, ntx=1,            ! Run MD [imin=0]
+     ntb=1,cut=8.0,           ! NVT, 8 A cutoff
+     ntp=0,                    ! No barostat
+     ntc=2, ntf=2              ! Shake on
+     ntt=3, gamma_ln=1.0,      ! Langevin Thermostat, 1.0ps-1
+     tempi=0.0,                ! Initial Temperature of 0K
+     nstlim=50000, dt=0.001,   ! 25K steps x 2fs = 50ps
+     iwrap=1,                  ! Wrap coordinates to central box
+     ioutfm=1,                 ! Write binary mdcrd
+     ntpr=5000, ntwx=5000,     ! Write to mdout and mdcrd every 5,000 steps
+     ntwr=50000,               ! Write restart file every 50,000 steps
+     ntr=1, restraint_wt=50.0, ! Restrain backbone atoms with 4.0 KCal/Mol/A
+     restraintmask=':1-247',
+     ig=-1,                    ! Use 'random' random number seed.
+     nmropt=1,                 ! Used to ramp temperature slowly
+ /
+
+&wt type='TEMP0', istep1=0, istep2=50000,value1=0.0, value2=50.0, /
+&wt type='END'  /
