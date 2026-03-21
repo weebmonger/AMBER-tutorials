@@ -1,0 +1,72 @@
+# chemshell opt for t6odm
+# defines the topology and coordiante file for the chemshell
+source parse_amber.tcl
+set top rc.prmtop
+set pdb rc.pdb
+set inpcrd rc.rst
+load_amber_coords inpcrd=$inpcrd prmtop=$top coords=rc.c
+set cor rc.c
+# Define which atoms are active
+source active.dat
+
+# read in atom charge
+# for the time being we have to calculate an energy to be able to call list_amber_atom_charges
+energy energy=e coords=$cor theory=dl_poly  : [ list \
+                                            amber_prmtop_file=$top \
+                                            scale14 = [ list [ expr 1 / 1.2 ] 0.5  ] \
+                                            mxexcl=2000  \
+                                            mxlist=40000 \
+                                            cutoff=1000 \
+                                            use_pairlist = no \
+                                            save_dl_poly_files = yes \
+                                            exact_srf=yes \
+                                            list_option=none ]
+
+set atom_charges [ list_amber_atom_charges ]
+
+set qm_atoms { 1-29 74 86-105 79-82 }
+
+# Need to combine art and hem into same residue for constrained optimisation
+set pdb_residues [ pdb_to_res $pdb ]
+set residues_c [ inlist function=combine residues= $pdb_residues sets= { 1 2 3 } target= QM ]
+
+
+# Geometry Optimization
+dl-find coords=$cor \
+        coordinates=hdlc \
+        active_atoms= $active \
+        residues= $pdb_residues \
+        maxcycle=9000 \
+        dump=1 \
+        list_option=full \
+        result=rc.opt.c \
+        theory=hybrid : [   list \
+                            coupling= shift \
+                            qm_region= $qm_atoms \
+                            atom_charges= $atom_charges \
+                            qm_theory= turbomole : [list   \
+                                                    use_ri=yes \
+                                                    ri_memory=500 \
+                                                    read_control= yes \
+                                                    scratchdir=/tmp \
+                                                    hamiltonian=b3lyp  \
+ scftype= uhf  ]  \
+                            mm_theory= dl_poly  : [ list \
+                                                    amber_prmtop_file=$top \
+                                                    exact_srf=yes \
+                                                    use_pairlist=yes \
+                                                    mxlist=16000 \
+                                                    cutoff=1000 \
+                                                    mxexcl=2000  \
+                                                    debug_memory=no \
+                                                    scale14 = { 0.83 0.5 } \
+                                                    conn=$cor  \
+                                                    save_dl_poly_files = yes \
+                                                    list_option=none ]]
+
+# chemsh.c to pdb
+# read pdb for residue information
+read_pdb file= $pdb
+write_pdb file=rc.opt.pdb coords=rc.opt.c
+# Finally, analyse the runtime
+times
