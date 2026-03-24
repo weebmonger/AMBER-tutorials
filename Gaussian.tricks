@@ -1,0 +1,1 @@
+taskset -cp 0-15(#no. of cores) PID
