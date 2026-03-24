@@ -1,0 +1,39 @@
+ource leaprc.water.tip3p
+source leaprc.gaff2
+source leaprc.protein.ff19SB
+
+addAtomTypes {
+        { "M1"  "Fe" "sp3" }
+        { "Y1"  "N" "sp3" }
+        { "Y2"  "N" "sp3" }
+        { "Y3"  "N" "sp3" }
+        { "Y4"  "N" "sp3" }
+}
+HEM = loadmol2 HEM.mol2
+CYX = loadmol2 CYX.mol2
+SUB = loadmol2 SUB2.mol2
+loadamberparams cpdi.frcmod
+loadamberparams SUB2.frcmod
+#loadamberparams CYX.frcmod
+
+loadamberparams frcmod.ions1lm_126_tip3p
+mol = loadpdb Input2.pdb
+
+bond mol.2.SG mol.1.FE
+
+#bond mol.1.FE mol.1.NC
+#bond mol.1.FE mol.1.ND
+#bond mol.1.FE mol.1.NA
+#bond mol.1.FE mol.1.NB
+
+savepdb mol dry.pdb
+saveamberparm mol dry.prmtop dry.inpcrd
+solvatebox mol TIP3PBOX 10.0
+
+addions mol Na+ 0
+addions mol Cl- 0
+
+savepdb mol solv.pdb
+saveamberparm mol solv.prmtop solv.inpcrd
+
+quit
